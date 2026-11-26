@@ -284,18 +284,31 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 /* ============================ HOME ============================ */
 
 .hero-stage { background: #111111; overflow: hidden; position: relative; }
+/* Cane's layout pass 2026-11-26: full-bleed media hero — the admin
+   photo/video fills the whole stage and the copy sits ON it over a
+   dark bottom gradient, like the approved demo picture. */
 .hero-inner {
+  position: relative;
+  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.2rem 1.25rem 2.6rem;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.8rem;
-  align-items: center;
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2.6rem 1.25rem 2.3rem;
 }
 @media (min-width: 960px) {
-  .hero-inner { grid-template-columns: 1fr 1fr; gap: 2.5rem; padding: 3.5rem 2.5rem 4rem; }
+  .hero-inner { min-height: 580px; padding: 3rem 2.5rem 2.9rem; }
 }
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(8, 8, 8, 0.88) 0%, rgba(8, 8, 8, 0.48) 42%, rgba(8, 8, 8, 0.14) 78%, rgba(8, 8, 8, 0.05) 100%);
+}
+.hero-copy { max-width: 660px; }
 .hero-kicker {
   text-transform: uppercase;
   letter-spacing: 1.1px;
@@ -313,6 +326,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   font-weight: 900;
   letter-spacing: -0.01em;
   text-transform: uppercase;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.45);
 }
 @media (min-width: 960px) {
   .hero-copy h2 { font-size: 4.3rem; }
@@ -323,8 +337,20 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   line-height: 1.5;
   margin: 1rem 0 0;
   max-width: 520px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+.hero-actions .btn-accent {
+  border-radius: 999px;
+  min-height: 60px;
+  padding: 0.7rem 2.3rem;
+  font-size: 1.1rem;
+}
+.hero-actions .btn-stage {
+  border-radius: 999px;
+  min-height: 60px;
+  background: rgba(0, 0, 0, 0.38);
+}
 .hero-meta {
   margin: 1.4rem 0 0;
   color: var(--on-stage-dim);
@@ -338,15 +364,14 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   background: #4cc38a; flex: none;
 }
 .hero-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   width: 100%;
-  height: 280px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 22px;
   display: block;
-  background: var(--sunken);
-}
-@media (min-width: 960px) {
-  .hero-photo { height: 420px; }
+  background: #111111;
 }
 
 .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem 6.5rem; }
@@ -378,6 +403,16 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--ink);
+}
+@media (min-width: 720px) {
+  .category-title { font-size: 2.05rem; }
+}
+/* Cane's layout pass: menu + home section titles get the demo's red
+   bar accent. Scoped so account/rewards/admin titles stay plain. */
+.menu-main .category-title,
+.home-section .category-title {
+  border-left: 9px solid var(--canes);
+  padding-left: 0.8rem;
 }
 
 /* "How would you like it?" service cards */
@@ -505,13 +540,18 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 
 /* ============================ MENU / CARDS ============================ */
 
+/* Cane's layout pass 2026-11-26: BIG cards — one per row on phones so
+   the photos stay large, 2 per row on tablets, 3 per row on desktop. */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 1.1rem;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
 }
-@media (min-width: 720px) {
-  .menu-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+@media (min-width: 600px) {
+  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .menu-grid { grid-template-columns: repeat(3, 1fr); }
 }
 .card {
   background: var(--surface);
@@ -526,21 +566,19 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .card:hover { border-color: var(--brand); transform: translateY(-2px); }
 .card img {
   width: 100%;
-  height: 195px;
+  aspect-ratio: 4 / 3;
+  height: auto;
   object-fit: cover;
   background: var(--sunken);
   display: block;
 }
-@media (min-width: 720px) {
-  .card img { height: 225px; }
-}
-.card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
-.card-body h3 { margin: 0; font-size: 1.06rem; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+.card-body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.card-body h3 { margin: 0; font-size: 1.24rem; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
 .card-body .num { color: var(--muted); font-weight: 700; margin-right: 0.25rem; }
 .card-body p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   line-height: 1.4;
   flex: 1;
   display: -webkit-box;
@@ -549,17 +587,17 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   overflow: hidden;
 }
 .price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; gap: 0.5rem; }
-.price { font-size: 1.32rem; font-weight: 800; color: var(--canes); font-variant-numeric: tabular-nums; }
+.price { font-size: 1.65rem; font-weight: 900; color: var(--canes); font-variant-numeric: tabular-nums; }
 .price .from { font-size: 0.82rem; font-weight: 400; color: var(--muted); }
 .add-btn {
   background: var(--canes);
   color: #ffffff;
   border: none;
   border-radius: 999px;
-  padding: 0 1.1rem;
-  height: 40px;
+  padding: 0 1.55rem;
+  height: 48px;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 1.02rem;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   display: inline-flex;
@@ -580,7 +618,7 @@ a.card.home-card { text-decoration: none; color: var(--ink); }
 }
 .qty-controls { display: flex; align-items: center; gap: 0.45rem; }
 .qty-controls button {
-  width: 34px; height: 34px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   border: 1.5px solid var(--brand);
   background: var(--surface);
@@ -591,46 +629,57 @@ a.card.home-card { text-decoration: none; color: var(--ink); }
 }
 .qty-controls .count { font-weight: 800; min-width: 1.2rem; text-align: center; }
 
-/* Menu layout: sidebar + main */
+/* Menu layout: category pill bar + main (Cane's layout pass
+   2026-11-26). The old left sidebar becomes ONE bold pill row that
+   sticks under the site header while the menu scrolls — same buttons,
+   same active-category behavior, new arrangement. */
 .menu-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 1.6rem;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
   align-items: start;
   margin-top: 1.2rem;
 }
 .menu-sidebar {
   position: sticky;
-  /* Clears the sticky site header (bars cleanup 2026-11-22). */
-  top: 6.25rem;
+  /* Clears the sticky site header (single row = 88px). */
+  top: 5.5rem;
+  z-index: 40;
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.4rem 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.1rem;
+  overflow-x: auto;
+  background: var(--canvas);
+  scrollbar-width: none;
 }
-.menu-sidebar .sidebar-title {
-  margin: 0 0 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.1px;
-  color: var(--muted);
-}
+.menu-sidebar::-webkit-scrollbar { display: none; }
+.menu-sidebar .sidebar-title { display: none; }
 .menu-sidebar > button {
-  text-align: left;
-  background: transparent;
-  border: none;
-  border-radius: 12px;
-  padding: 0.6rem 0.85rem;
-  font-weight: 500;
-  font-size: 0.98rem;
+  flex: none;
+  white-space: nowrap;
+  text-align: center;
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.5rem 1.15rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--ink);
-  min-height: 42px;
+  min-height: 44px;
 }
-.menu-sidebar > button:hover { background: var(--sunken); }
-.menu-sidebar > button.active { background: var(--brand-wash); color: var(--brand); font-weight: 700; }
-.menu-sidebar .sidebar-account { margin-top: 0.8rem; border-top: 1px solid var(--hairline); padding-top: 0.8rem; }
-.menu-sidebar .sidebar-account a { text-decoration: none; font-weight: 600; }
+.menu-sidebar > button:hover { border-color: var(--canes); color: var(--canes); }
+.menu-sidebar > button.active { background: var(--canes); border-color: var(--canes); color: #ffffff; }
+.menu-sidebar .sidebar-account { margin: 0 0 0 auto; padding-left: 0.5rem; flex: none; }
+.menu-sidebar .sidebar-account a { text-decoration: none; font-weight: 700; white-space: nowrap; }
+/* 861-959px: the header wraps to two rows, so the pill bar sticks lower. */
+@media (min-width: 861px) and (max-width: 959px) {
+  .menu-sidebar { top: 8.5rem; }
+}
 .menu-search input {
   width: 100%;
   padding: 0.8rem 1.1rem;
@@ -650,26 +699,9 @@ a.card.home-card { text-decoration: none; color: var(--ink); }
   font-weight: 600;
   color: var(--ink);
 }
-@media (max-width: 720px) {
-  .menu-layout { grid-template-columns: 1fr; }
-  .menu-sidebar {
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.45rem;
-  }
-  .menu-sidebar .sidebar-title { width: 100%; }
-  .menu-sidebar > button {
-    border: 1.5px solid var(--ink);
-    background: var(--surface);
-    border-radius: 999px;
-    min-height: 40px;
-    font-weight: 600;
-  }
-  .menu-sidebar > button.active { background: var(--canes); border-color: var(--canes); color: #ffffff; }
-  .menu-sidebar .sidebar-account { border-top: none; margin-top: 0; padding-top: 0; }
-}
+/* Cane's layout pass 2026-11-26: the sticky pill bar above is the
+   layout at every width — the old <=720px static sidebar treatment
+   that used to live here is retired. */
 
 /* ============================ CART / CHECKOUT ============================ */
 
